@@ -5,6 +5,8 @@ date: "7/8/2022"
 output: html_document
 ---
 
+### setup
+
 ```{r setup, include=FALSE}
 library(tidyverse)
 ```
@@ -12,12 +14,6 @@ library(tidyverse)
 ```{r}
 customers = read.csv("casestudy.csv")
 ```
-
-```{r}
-customers_wider <- customers %>%
-  pivot_wider(names_from = year, values_from = net_revenue ) 
-```
-
 
 
 ## Total Revenue for each current year
@@ -27,6 +23,10 @@ customers %>%
   group_by(year) %>%
   summarise(Total_Revenue = sum(net_revenue))
 ```
+
+
+
+
 
 ## New Customer Revenue for years 2016 and 2017 (new customers not present in previous year)
 
@@ -46,10 +46,107 @@ new_customer_2017 <- anti_join(customers_2017, customers_2016, by = c("customer_
 
 
 new_customer_2016 %>%
-  summarise(Total_Revenue = sum(net_revenue))
+  summarise(Total_new_customer_Revenue_2016 = sum(net_revenue))
 
 new_customer_2017 %>%
+  summarise(Total_new_customer_Revenue_2017 = sum(net_revenue))
+```
+
+
+```{r}
+customers_existing_2016 <- inner_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
+
+customers_existing_2017 <- inner_join(customers_2016, customers_2017, by = c("customer_email" = "customer_email"))
+```
+
+
+## Existing Customer Growth for 2016 
+
+```{r}
+customers_existing_2016 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2016 = (net_revenue.y - net_revenue.x)) %>%
+  head(10)
+
+```
+## Existing Customer Growth for 2017
+
+```{r}
+customers_existing_2017 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2017 = (net_revenue.y - net_revenue.x)) %>%
+  head(10)
+```
+
+
+
+
+
+```{r}
+customers_2015_revenue <-
+  customers_2015 %>%
   summarise(Total_Revenue = sum(net_revenue))
+
+customers_2016_revenue <-
+  customers_2016 %>%
+  summarise(Total_Revenue = sum(net_revenue))
+
+customers_2017_revenue <-
+  customers_2017 %>%
+  summarise(Total_Revenue = sum(net_revenue))
+
+
+```
+
+## Revenue lost from attrition 2016
+
+```{r}
+attrition_2016 = customers_2016_revenue[1] - customers_2015_revenue[1]
+
+attrition_2016
+```
+
+## Revenue lost from attrition 2017
+
+```{r}
+attrition_2017 = customers_2017_revenue[1] - customers_2016_revenue[1]
+
+attrition_2017
+```
+
+
+
+
+## Exisiting 2016 Customer Revenue In 2016
+
+```{r}
+customers_existing_2016 %>%
+  summarise(Total_Revenue = sum(net_revenue.y))
+  
+```
+
+
+## Exisiting 2016 Customer Revenue In 2015
+
+```{r}
+customers_existing_2016 %>%
+  summarise(Total_Revenue = sum(net_revenue.x))
+```
+
+
+## Existing 2017 Customer Revenue In 2017
+
+```{r}
+customers_existing_2017 %>%
+  summarise(Total_Revenue = sum(net_revenue.y))
+```
+
+## Exisitng 2017 Customer Revenue In 2016
+
+
+```{r}
+customers_existing_2017 %>%
+  summarise(Total_Revenue = sum(net_revenue.x))
 ```
 
 
@@ -96,31 +193,5 @@ customers_lost_2017 <- anti_join(customers_2016, customers_2017, by = c("custome
 length(unique(customers_lost_2016[["customer_email"]]))
 length(unique(customers_lost_2017[["customer_email"]]))
 ```
-
-
-## Calculate number of exisiting customers from previous year 
-
-```{r}
-customers_existing_2016 <- inner_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
-
-customers_existing_2017 <- inner_join(customers_2016, customers_2017, by = c("customer_email" = "customer_email"))
-```
-
-
-## Existing Customer Growth for 2016 
-
-```{r}
-customers_existing_2016 %>%
-  select(-X.x, -X.y) %>%
-  mutate( existing_customer_growth_2016 = (net_revenue.y - net_revenue.x))
-```
-## Existing Customer Growth for 2017
-
-```{r}
-customers_existing_2017 %>%
-  select(-X.x, -X.y) %>%
-  mutate( existing_customer_growth_2017 = (net_revenue.y - net_revenue.x))
-```
-
 
 
