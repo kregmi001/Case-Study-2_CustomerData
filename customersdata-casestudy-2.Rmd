@@ -5,7 +5,7 @@ date: "7/8/2022"
 output: html_document
 ---
 
-### setup
+### package and data setup
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -16,7 +16,9 @@ customers = read.csv("casestudy.csv")
 ```
 
 
-## Total Revenue for each current year
+
+
+## Total Revenue for each current year 2017 is $31,417,495
 
 ```{r}
 customers %>%
@@ -52,15 +54,22 @@ new_customer_2017 %>%
   summarise(Total_new_customer_Revenue_2017 = sum(net_revenue))
 ```
 
+### new customer revenue for 2016 was $18,245,491
+
+### new customer revenue for 2017 was $28,776,235
+
+
+
 
 ```{r}
+# join tables for customers present year prior and year of
 customers_existing_2016 <- inner_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
 
 customers_existing_2017 <- inner_join(customers_2016, customers_2017, by = c("customer_email" = "customer_email"))
 ```
 
 
-## Existing Customer Growth for 2016 
+## Existing Individual Customer Growth for 2016 
 
 ```{r}
 customers_existing_2016 %>%
@@ -69,7 +78,9 @@ customers_existing_2016 %>%
   head(10)
 
 ```
-## Existing Customer Growth for 2017
+
+
+## Existing Individual Customer Growth for 2017
 
 ```{r}
 customers_existing_2017 %>%
@@ -83,6 +94,8 @@ customers_existing_2017 %>%
 
 
 ```{r}
+# total revenue for each year
+
 customers_2015_revenue <-
   customers_2015 %>%
   summarise(Total_Revenue = sum(net_revenue))
@@ -98,7 +111,9 @@ customers_2017_revenue <-
 
 ```
 
-## Revenue lost from attrition 2016
+
+
+## Revenue lost from attrition in 2016 was -$3,305,806 
 
 ```{r}
 attrition_2016 = customers_2016_revenue[1] - customers_2015_revenue[1]
@@ -106,7 +121,7 @@ attrition_2016 = customers_2016_revenue[1] - customers_2015_revenue[1]
 attrition_2016
 ```
 
-## Revenue lost from attrition 2017
+## Revenue was not lost from attrition in 2017 as revenue grew $5,686,551
 
 ```{r}
 attrition_2017 = customers_2017_revenue[1] - customers_2016_revenue[1]
@@ -117,7 +132,7 @@ attrition_2017
 
 
 
-## Exisiting 2016 Customer Revenue In 2016
+## Exisiting 2016 Customer Revenue In 2016: $7,485,453
 
 ```{r}
 customers_existing_2016 %>%
@@ -126,7 +141,7 @@ customers_existing_2016 %>%
 ```
 
 
-## Exisiting 2016 Customer Revenue In 2015
+## Exisiting 2016 Customer Revenue In 2015: $7,465,117	
 
 ```{r}
 customers_existing_2016 %>%
@@ -134,14 +149,14 @@ customers_existing_2016 %>%
 ```
 
 
-## Existing 2017 Customer Revenue In 2017
+## Existing 2017 Customer Revenue In 2017: $2,641,260	
 
 ```{r}
 customers_existing_2017 %>%
   summarise(Total_Revenue = sum(net_revenue.y))
 ```
 
-## Exisitng 2017 Customer Revenue In 2016
+## Exisitng 2017 Customer Revenue In 2016: $2,620,649	
 
 
 ```{r}
@@ -150,33 +165,33 @@ customers_existing_2017 %>%
 ```
 
 
-## Total Customers 2015
+## Total Customers 2015: 231,294
 
 ```{r}
 length(unique(customers_2015[["customer_email"]]))
 
 ```
 
-## Total Customers 2016
+## Total Customers 2016: 204,646
 
 ```{r}
 length(unique(customers_2016[["customer_email"]]))
 ```
 
-## Total Customers 2017
+## Total Customers 2017: 249,987
 
 ```{r}
 length(unique(customers_2017[["customer_email"]]))
 ```
 
 
-## New Customers in 2016
+## New Customers in 2016: 145,062
 
 ```{r}
 length(unique(new_customer_2016[["customer_email"]]))
 ```
 
-## New Customers in 2017
+## New Customers in 2017: 229,028
 
 ```{r}
 length(unique(new_customer_2017[["customer_email"]]))
@@ -194,4 +209,5 @@ length(unique(customers_lost_2016[["customer_email"]]))
 length(unique(customers_lost_2017[["customer_email"]]))
 ```
 
-
+# exisiting customers lost in 2016: 171,710
+# exisiting customers lost in 2017: 183,687
