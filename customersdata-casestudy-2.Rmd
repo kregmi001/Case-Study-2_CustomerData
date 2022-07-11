@@ -18,7 +18,7 @@ customers = read.csv("casestudy.csv")
 
 
 
-## Total Revenue for each current year 2017 is $31,417,495
+## Total Revenue for current year 2017: $31,417,495
 
 ```{r}
 customers %>%
