@@ -1,5 +1,5 @@
 ---
-title: "Case-Study-2"
+title: "Case-Study-2_CustomerData"
 author: "Kushal Regmi"
 date: "7/8/2022"
 output: html_document
