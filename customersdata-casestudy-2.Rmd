@@ -91,6 +91,12 @@ customers_existing_2016 %>%
   head(10)
 
 ```
+```{r}
+customers_existing_2016 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2016 = (net_revenue.y - net_revenue.x)) %>%
+  summarise(sum(existing_customer_growth_2016))
+```
 
 
 ## Existing Individual Customer Growth for 2017
@@ -103,13 +109,19 @@ customers_existing_2017 %>%
   head(10)
 ```
 
+```{r}
+customers_existing_2017 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2017 = (net_revenue.y - net_revenue.x)) %>%
+  summarise(sum(existing_customer_growth_2017))
+```
+
+
 
 
 
 
 # Revenue Lost From Attrition 
-
-
 
 
 ```{r}
@@ -183,7 +195,7 @@ revenue_comparison_2015_2016 = customers_2016_revenue[1] - customers_2015_revenu
 
 ```
 
-### Revenue from 2016 compared to 2015 was -$3,305,806 
+### Revenue from 2016 compared to 2015 fell by $3,305,806 
 
 
 
@@ -193,7 +205,7 @@ revenue_comparison_2015_2016 = customers_2017_revenue[1] - customers_2016_revenu
 revenue_comparison_2015_2016
 ```
 
-### Revenue from 2017 compared to 2016 $5,686,551
+### Revenue from 2017 compared to 2016 increased by $5,686,551
 
 
 
