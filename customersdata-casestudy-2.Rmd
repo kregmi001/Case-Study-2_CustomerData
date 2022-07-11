@@ -144,7 +144,7 @@ attrition_2017 = customer_mean_revenue_2017[1] * length(unique(customers_lost_20
 
 
 
-### Revenue Lost From Attrition was calculated by multiplying the number of lost customer each year by the mean of individual revenue the same year. This gives us an estimate to the value lost customers had to add in revenue the year they were lost. The relative high number of customers lost and gained year in and out indicates high turnover rate.  
+### Revenue Lost From Attrition was calculated by multiplying the number of lost customer each year by the mean of individual revenue the same year. This gives us an estimate to the revenue these lost customers had potential to add the year they were lost. The relative high number of customers lost and gained year in and out indicates high turnover rate.  
 
 
 
