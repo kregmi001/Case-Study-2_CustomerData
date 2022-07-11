@@ -5,7 +5,7 @@ date: "7/8/2022"
 output: html_document
 ---
 
-### package and data setup
+## package and data setup
 
 ```{r setup, include=FALSE}
 library(tidyverse)
@@ -17,16 +17,26 @@ customers = read.csv("casestudy.csv")
 
 
 
+# Total Revenue for current year
+
+
 
 ## Total Revenue for current year 2017: $31,417,495
 
 ```{r}
-customers %>%
+customers1 <-
+  customers %>%
   group_by(year) %>%
   summarise(Total_Revenue = sum(net_revenue))
+  
+customers1
+library(ggplot2)
+
 ```
 
 
+
+# New Customer Revenue
 
 
 
@@ -61,6 +71,9 @@ new_customer_2017 %>%
 
 
 
+# Existing Customer Growth
+
+
 ```{r}
 # join tables for customers present year prior and year of
 customers_existing_2016 <- inner_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
@@ -83,6 +96,7 @@ customers_existing_2016 %>%
 ## Existing Individual Customer Growth for 2017
 
 ```{r}
+
 customers_existing_2017 %>%
   select(-X.x, -X.y) %>%
   mutate( existing_customer_growth_2017 = (net_revenue.y - net_revenue.x)) %>%
@@ -92,6 +106,56 @@ customers_existing_2017 %>%
 
 
 
+
+# Revenue Lost From Attrition 
+
+
+
+
+```{r}
+
+customer_mean_revenue_2016 <- customers_2016 %>%
+ summarise(sum(net_revenue) / length(unique(customers_2016[["customer_email"]])))
+
+customer_mean_revenue_2017 <- customers_2017 %>%
+ summarise(sum(net_revenue) / length(unique(customers_2017[["customer_email"]])))
+
+customers_lost_2016 <- anti_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
+customers_lost_2017 <- anti_join(customers_2016, customers_2017, by = c("customer_email" = "customer_email"))
+
+
+attrition_2016 = customer_mean_revenue_2016[1] * length(unique(customers_lost_2016[["customer_email"]]))
+
+attrition_2017 = customer_mean_revenue_2017[1] * length(unique(customers_lost_2017[["customer_email"]]))
+
+```
+
+
+
+### Revenue Lost From Attrition was calculated by multiplying the number of lost customer each year by the mean of individual revenue the same year. This gives us an estimate to the value lost customers had to add in revenue the year they were lost. The relative high number of customers lost and gained year in and out indicates high turnover rate.  
+
+
+
+```{r}
+attrition_2016
+
+```
+
+### The Revenue lost from attrition was valued at $21,589,771 in 2016
+
+
+```{r}
+attrition_2017
+```
+
+
+### The Revenue lost from attrition was valued at $23,085,142 in 2017
+
+
+
+
+
+# Total Revenue comparison year by year
 
 ```{r}
 # total revenue for each year
@@ -113,21 +177,27 @@ customers_2017_revenue <-
 
 
 
-## Revenue lost from attrition in 2016 was -$3,305,806 
-
 ```{r}
-attrition_2016 = customers_2016_revenue[1] - customers_2015_revenue[1]
+revenue_comparison_2015_2016 = customers_2016_revenue[1] - customers_2015_revenue[1]
 
-attrition_2016
+
 ```
 
-## Revenue was not lost from attrition in 2017 as revenue grew $5,686,551
+### Revenue from 2016 compared to 2015 was -$3,305,806 
+
+
 
 ```{r}
-attrition_2017 = customers_2017_revenue[1] - customers_2016_revenue[1]
+revenue_comparison_2015_2016 = customers_2017_revenue[1] - customers_2016_revenue[1]
 
-attrition_2017
+revenue_comparison_2015_2016
 ```
+
+### Revenue from 2017 compared to 2016 $5,686,551
+
+
+
+# Exisiting Customer Revenue Current/Previous Year
 
 
 
@@ -156,13 +226,17 @@ customers_existing_2017 %>%
   summarise(Total_Revenue = sum(net_revenue.y))
 ```
 
-## Exisitng 2017 Customer Revenue In 2016: $2,620,649	
+## Exisiting 2017 Customer Revenue In 2016: $2,620,649	
 
 
 ```{r}
 customers_existing_2017 %>%
   summarise(Total_Revenue = sum(net_revenue.x))
 ```
+
+
+
+# Total Customers By Year
 
 
 ## Total Customers 2015: 231,294
@@ -185,6 +259,10 @@ length(unique(customers_2017[["customer_email"]]))
 ```
 
 
+
+# New Customers By Year
+
+
 ## New Customers in 2016: 145,062
 
 ```{r}
@@ -199,15 +277,59 @@ length(unique(new_customer_2017[["customer_email"]]))
 
 
 
-## Lost customers not present following years of 2016 and 2017
+
+
+# Lost customers not present following years of 2016 and 2017
 
 ```{r}
-customers_lost_2016 <- anti_join(customers_2015, customers_2016, by = c("customer_email" = "customer_email"))
-customers_lost_2017 <- anti_join(customers_2016, customers_2017, by = c("customer_email" = "customer_email"))
 
 length(unique(customers_lost_2016[["customer_email"]]))
 length(unique(customers_lost_2017[["customer_email"]]))
 ```
 
-# exisiting customers lost in 2016: 171,710
-# exisiting customers lost in 2017: 183,687
+## exisiting customers lost in 2016: 171,710
+## exisiting customers lost in 2017: 183,687
+
+
+
+# Plots
+
+
+```{r}
+ggplot(customers1) +
+ aes(x = year, y = Total_Revenue) +
+ geom_line(size = 0.5, colour = "#112446") +
+ theme_minimal() +
+ ylim(2.5e+07, 3.5e+07)
+```
+
+
+### The plot above showcases that revenue decreased in 2016 from 2015 but then exceeded revenue from 2015 in 2017
+
+
+```{r}
+existing_customer_2016 <- customers_existing_2016 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2016 = (net_revenue.y - net_revenue.x)) 
+
+ggplot(existing_customer_2016) +
+  aes(x = existing_customer_growth_2016) +
+  geom_density(adjust = 0.5, fill = "#112446") +
+  theme_minimal()
+```
+
+
+
+
+```{r}
+existing_customer_2017 <- customers_existing_2017 %>%
+  select(-X.x, -X.y) %>%
+  mutate( existing_customer_growth_2017 = (net_revenue.y - net_revenue.x)) 
+
+ggplot(existing_customer_2017) +
+  aes(x = existing_customer_growth_2017) +
+  geom_density(adjust = 0.5, fill = "#112446") +
+  theme_minimal()
+```
+
+### The two density plots show the growth in revenue of existing customers in 2016 and 2017. Both plots are similar in their distribution. The plots do not particularly follow a Normal Distribution given the width of their tails, however both have the highest density in the 0 range, indicating no significant overall growth in revenue with exisiting customers for both years. 
